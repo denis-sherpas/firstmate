@@ -356,10 +356,56 @@ test_e2e_daemon_parented_version_named_session_keeps_its_lock() {
   pass "session-lock e2e: a version-named session under a harness-named daemon keeps its own lock"
 }
 
+test_omp_runtime_binary_is_identified() {
+  local dir fakebin
+  dir="$TMP_ROOT/omp-runtime"
+  fakebin=$(fm_fakebin "$dir")
+  mkdir -p "$dir/state"
+  cat > "$fakebin/ps" <<'SH'
+#!/usr/bin/env bash
+set -u
+field= pid=
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    -o) field=$2; shift 2 ;;
+    -p) pid=$2; shift 2 ;;
+    *) shift ;;
+  esac
+done
+case "$pid:$field:${FM_TEST_OMP_SHAPE:-omp}" in
+  300:comm=:omp) printf '%s\n' 'omp' ;;
+  300:args=:omp) printf '%s\n' 'omp --resume=/Users/u/.omp/agent/sessions/-firstmate/2026-08-20T12-17-20-410Z.sjsonl' ;;
+  300:comm=:component) printf '%s\n' 'component' ;;
+  300:args=:component) printf '%s\n' 'component-lint' ;;
+  300:ppid=:*) printf '%s\n' 1 ;;
+  *:comm=:*) printf '%s\n' bash ;;
+  *:args=:*) printf '%s\n' 'bash /repo/bin/fm-watch-arm.sh' ;;
+  *:ppid=:*) printf '%s\n' 300 ;;
+esac
+SH
+  chmod +x "$fakebin/ps"
+  printf '300\n' > "$dir/state/.lock"
+
+  got=$(FM_TEST_OMP_SHAPE=omp lib_eval "$fakebin" 'fm_harness_ancestry_pid') \
+    || fail "omp: the oh-my-pi runtime binary was not found in the ancestry at all"
+  [ "$got" = 300 ] || fail "omp: ancestry resolved '$got', expected the omp session pid 300"
+  FM_TEST_OMP_SHAPE=omp lib_eval "$fakebin" 'fm_harness_pid_alive 300' \
+    || fail "omp: a live omp session was not recognized as a harness"
+  FM_TEST_OMP_SHAPE=omp lib_eval "$fakebin" "fm_session_lock_owned_by_self '$dir/state'" \
+    || fail "omp: the session holding the lock did not recognize itself as the owner"
+
+  # The ^omp$ anchor must not let a mere component of a larger name match.
+  if FM_TEST_OMP_SHAPE=component lib_eval "$fakebin" 'fm_harness_ancestry_pid'; then
+    fail "omp: an unrelated 'component' process name was treated as the harness"
+  fi
+  pass "session-lock: the oh-my-pi runtime binary 'omp' is identified and anchored"
+}
+
 test_version_named_session_is_identified_on_both_platforms
 test_ordinary_paths_are_never_harness_processes
 test_harness_beyond_a_gap_never_owns_the_lock
 test_competing_version_named_session_is_seen_as_live
+test_omp_runtime_binary_is_identified
 test_e2e_version_named_session_claims_the_home
 test_e2e_daemon_parented_session_claims_the_home
 test_e2e_daemon_parented_version_named_session_keeps_its_lock

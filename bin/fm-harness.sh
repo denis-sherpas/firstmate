@@ -50,6 +50,15 @@ detect_own() {
   # CURSOR_AGENT=1 is set for the child/tool processes this script runs as.
   [ "${CURSOR_AGENT:-}" = "1" ] && { echo cursor; return; }
   [ "${CURSOR_INVOKED_AS:-}" = "cursor-agent" ] && { echo cursor; return; }
+  # Oh My Pi's runtime binary `omp` sets OMPCODE=1 AND CLAUDECODE=1 for its
+  # children (verified live on omp 17.4.0, 2026-08-24), so OMPCODE must win
+  # over an inherited CLAUDECODE or an omp primary is misread as claude.
+  # OMPCODE is omp's own marker, unambiguous when present, and resolves to the
+  # same pi-family boundary as PI_CODING_AGENT below.
+  if [ "${OMPCODE:-}" = "1" ]; then
+    if [ "${FM_PI_HARNESS:-}" = pi-signed ]; then echo pi-signed; else echo pi; fi
+    return
+  fi
   [ "${CLAUDECODE:-}" = "1" ] && { echo claude; return; }
   if [ "${PI_CODING_AGENT:-}" = "true" ]; then
     if [ "${FM_PI_HARNESS:-}" = pi-signed ]; then echo pi-signed; else echo pi; fi
@@ -95,6 +104,11 @@ detect_own() {
       muse|muse-bin-*) echo muse; return ;;
       pi-signed) echo pi; return ;;
       pi) echo pi; return ;;
+      # omp is oh-my-pi's runtime binary; the `pi` launcher on PATH
+      # execs it, and a spawn with harness pi lands on a live `omp`
+      # process (verified live 2026-08-24 on omp 17.4.0). Same pi-family
+      # boundary as PI_CODING_AGENT above.
+      omp) echo pi; return ;;
       node*|python*)
         # Bare interpreter: match the harness name in its script path.
         args=$(ps -o args= -p "$pid" 2>/dev/null)
