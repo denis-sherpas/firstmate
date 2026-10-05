@@ -1,0 +1,3 @@
+not ok - the watcher rejected the merge poll after the captain-call inventory was completed (unexpected: 'rejected unauthenticated state checks')
+--- output ---
+check: rejected unauthenticated state checks: /private/var/folders/s0/wlhjddjd4wb6xhkr5g2bkshm0000gn/T/fm-captain-hold.UEGEtL/completed-hold-merge-poll/state/sample-held-poll.check.sh

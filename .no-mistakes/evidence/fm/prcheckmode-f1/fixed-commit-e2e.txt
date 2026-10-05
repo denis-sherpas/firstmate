@@ -1,0 +1,16 @@
+--- meta after arm + hold + complete:
+window=firstmate:fm-sample-held-poll
+endpoint_task_id=sample-held-poll
+worktree=/private/var/folders/s0/wlhjddjd4wb6xhkr5g2bkshm0000gn/T/fm-captain-hold.VrXtVe/completed-hold-merge-poll/projects/sample-held-poll
+project=/private/var/folders/s0/wlhjddjd4wb6xhkr5g2bkshm0000gn/T/fm-captain-hold.VrXtVe/completed-hold-merge-poll/projects/sample-held-repo
+harness=codex
+kind=ship
+mode=direct-PR
+spawn_gen=fixture-sample-held-poll
+pr=https://github.com/sample/sample/pull/41
+decisions_reviewed=1
+decision_keys=sample-held-poll-call
+-rw-------@ 1 denisfonteneau  staff  7092 Oct  5 13:19 /private/var/folders/s0/wlhjddjd4wb6xhkr5g2bkshm0000gn/T/fm-captain-hold.VrXtVe/completed-hold-merge-poll/state/sample-held-poll.check.sh
+--- watcher output:
+check: /private/var/folders/s0/wlhjddjd4wb6xhkr5g2bkshm0000gn/T/fm-captain-hold.VrXtVe/completed-hold-merge-poll/state/sample-held-poll.check.sh: merged
+ok - a completed captain hold keeps the merge poll authenticated and watched

@@ -1,0 +1,34 @@
+--- tampered meta (dup_pr):
+window=firstmate:fm-sample-held-poll
+endpoint_task_id=sample-held-poll
+worktree=/private/var/folders/s0/wlhjddjd4wb6xhkr5g2bkshm0000gn/T/fm-captain-hold.8YXpF7/adv-dup_pr/projects/sample-held-poll
+project=/private/var/folders/s0/wlhjddjd4wb6xhkr5g2bkshm0000gn/T/fm-captain-hold.8YXpF7/adv-dup_pr/projects/sample-held-repo
+harness=codex
+kind=ship
+mode=direct-PR
+spawn_gen=fixture-sample-held-poll
+pr=https://github.com/sample/sample/pull/41
+decisions_reviewed=1
+decision_keys=sample-held-poll-call
+pr=https://github.com/evil/evil/pull/9
+-rw-------@ 1 denisfonteneau  staff  7092 Oct  5 13:18 /private/var/folders/s0/wlhjddjd4wb6xhkr5g2bkshm0000gn/T/fm-captain-hold.8YXpF7/adv-dup_pr/state/sample-held-poll.check.sh
+--- watcher output:
+check: rejected unauthenticated state checks: /private/var/folders/s0/wlhjddjd4wb6xhkr5g2bkshm0000gn/T/fm-captain-hold.8YXpF7/adv-dup_pr/state/sample-held-poll.check.sh
+ok - tampered identity (dup_pr) is still rejected
+--- tampered meta (bad_head):
+window=firstmate:fm-sample-held-poll
+endpoint_task_id=sample-held-poll
+worktree=/private/var/folders/s0/wlhjddjd4wb6xhkr5g2bkshm0000gn/T/fm-captain-hold.8YXpF7/adv-bad_head/projects/sample-held-poll
+project=/private/var/folders/s0/wlhjddjd4wb6xhkr5g2bkshm0000gn/T/fm-captain-hold.8YXpF7/adv-bad_head/projects/sample-held-repo
+harness=codex
+kind=ship
+mode=direct-PR
+spawn_gen=fixture-sample-held-poll
+pr=https://github.com/sample/sample/pull/41
+decisions_reviewed=1
+decision_keys=sample-held-poll-call
+pr_head=not-a-sha
+-rw-------@ 1 denisfonteneau  staff  7092 Oct  5 13:19 /private/var/folders/s0/wlhjddjd4wb6xhkr5g2bkshm0000gn/T/fm-captain-hold.8YXpF7/adv-bad_head/state/sample-held-poll.check.sh
+--- watcher output:
+check: rejected unauthenticated state checks: /private/var/folders/s0/wlhjddjd4wb6xhkr5g2bkshm0000gn/T/fm-captain-hold.8YXpF7/adv-bad_head/state/sample-held-poll.check.sh
+ok - tampered identity (bad_head) is still rejected
